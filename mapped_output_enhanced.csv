@@ -1,0 +1,11 @@
+lookup_key,description,status,_match_confidence,_match_type
+CC460,Compliance Check,Active,1.0,EXACT
+CC883,Customer Support,Active,1.0,EXACT
+BB898,Bug Fix,Inactive,1.0,EXACT
+XZ530,Feature Request,Active,1.0,EXACT
+CC359,Data Update,Active,1.0,EXACT
+KJ905,Report Generation,Inactive,1.0,EXACT
+XZ870,API Integration,Active,1.0,EXACT
+AA231,Backup Service,Active,1.0,EXACT
+XZ868,Security Patch,Inactive,1.0,EXACT
+CC294,Configuration,Active,1.0,EXACT

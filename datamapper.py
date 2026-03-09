@@ -14,9 +14,9 @@ class DataQualityGuardian:
     
     def analyze_data_quality(self, raw_df, ref_df, raw_col, ref_col):
         """AI-Powered Data Quality Analysis"""
-        print("🔍 Running Data Quality Guardian...")
+        print("Running Data Quality Guardian...")
         
-        # 1. CLEANING ANALYSIS
+        # 1. Cleaning analysis
         raw_dirty = raw_df[raw_col].astype(str).str.strip()
         ref_dirty = ref_df[ref_col].astype(str).str.strip()
         
@@ -26,11 +26,11 @@ class DataQualityGuardian:
             'ref_nulls': ref_df[ref_col].isna().sum()
         }
         
-        # 2. SMART CLEANING
+        # 2. Smart cleaning
         raw_clean = raw_dirty.str.lower().str.replace(r'[^a-z0-9]', '', regex=True)
         ref_clean = ref_dirty.str.lower().str.replace(r'[^a-z0-9]', '', regex=True)
         
-        # 3. FUZZY + EXACT MATCHING (Levenshtein distance)
+        # 3. Fuzzy and Exact Matching
         exact_matches = ref_df[raw_dirty.isin(ref_dirty)].copy()
         exact_matches['_match_confidence'] = 1.00
         exact_matches['_match_type'] = 'EXACT'
@@ -40,7 +40,7 @@ class DataQualityGuardian:
         final_matches = pd.concat([exact_matches, fuzzy_matches], ignore_index=True)
         final_matches.drop_duplicates(subset=[ref_col], inplace=True)
         
-        # 4. QUALITY METRICS
+        # 4. Quality metrics
         self.quality_report['results'] = {
             'exact_matches': len(exact_matches),
             'fuzzy_matches': len(fuzzy_matches),
@@ -54,7 +54,7 @@ class DataQualityGuardian:
         from rapidfuzz import fuzz
         
         fuzzy_results = []
-        # FIX: Only process UNIQUE raw values (not 100x duplicates)
+        # Fix: Only process UNIQUE raw values (not 100x duplicates)
         unique_raw = raw_clean.drop_duplicates().dropna()
         
         for raw_val in unique_raw:
@@ -76,8 +76,8 @@ class DataQualityGuardian:
         return pd.DataFrame(fuzzy_results)
     
     def generate_executive_dashboard(self, final_matches):
-        """STUNNING Professional Dashboard - Fixed empty confidence + Beautiful design"""
-        print("✨ Creating EXECUTIVE dashboard...")
+        """ Professional Dashboard - Fixed empty confidence + Beautiful design"""
+        print("Creating EXECUTIVE dashboard...")
         
         # Fix: Always create data even for exact matches
         if '_match_confidence' not in final_matches.columns:
@@ -86,18 +86,18 @@ class DataQualityGuardian:
         
         fig = make_subplots(
             rows=2, cols=2,
-            subplot_titles=('🎯 Match Success Rate', '📊 Match Types', '⭐ Confidence Distribution', '⚡ Performance Timeline'),
+            subplot_titles=('Match Success Rate', 'Match Types', 'Confidence Distribution', 'Performance Timeline'),
             specs=[[{"type": "pie"}, {"type": "bar"}], 
                    [{"type": "histogram"}, {"type": "indicator"}]],
             horizontal_spacing=0.05,
             vertical_spacing=0.1
         )
         
-        # 1. GORGEOUS PIE CHART (Top Left)
+        # 1.Pie chart (Top Left)
         fig.add_trace(go.Pie(
             values=[self.quality_report['results']['exact_matches'], 
                     self.quality_report['results']['fuzzy_matches']],
-            labels=['✅ Exact Matches', '🤖 AI Fuzzy Matches'],
+            labels=['Exact Matches', 'AI Fuzzy Matches'],
             marker_colors=['#10B981', '#3B82F6'],
             textinfo='label+percent',
             textposition='inside',
@@ -115,7 +115,7 @@ class DataQualityGuardian:
             textposition='auto'
         ), row=1, col=2)
         
-        # 3. FIXED Confidence Histogram (Bottom Left) - NOW HAS DATA!
+        # 3. Fixed Confidence Histogram (Bottom Left) 
         fig.add_trace(go.Histogram(
             x=final_matches['_match_confidence'],
             nbinsx=10,
@@ -148,12 +148,12 @@ class DataQualityGuardian:
             }
         ), row=2, col=2)
         
-        # STUNNING THEME
+        # Theme
         fig.update_layout(
             height=700,
             width=1200,
             title={
-                'text': f"🚀 Data Quality Guardian - {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                'text': f"Data Quality Guardian - {datetime.now().strftime('%Y-%m-%d %H:%M')}",
                 'x': 0.5,
                 'font': {'size': 24, 'color': '#1F2937'}
             },
@@ -168,33 +168,55 @@ class DataQualityGuardian:
         import webbrowser
         import os
         webbrowser.open_new_tab(f'file://{os.path.realpath("data_quality_dashboard.html")}')
-        print("🌐 🎨 STUNNING dashboard opened automatically!")
+        print("dashboard opened automatically!")
     
     def run_full_pipeline(self, raw_col='lookup_key', ref_col='lookup_key'):
-        print("🚀 Data Quality Guardian v2.0 Starting...")
+        print("Data Quality Guardian v2.0 Starting...")
         
         # Load data
         raw_df = pd.read_csv('raw_data.csv')
         ref_df = pd.read_excel('reference_data.xlsx')
         
-        print(f"📊 Raw: {len(raw_df)} rows | Ref: {len(ref_df)} rows")
+        print(f"Raw: {len(raw_df)} rows | Ref: {len(ref_df)} rows")
         
         # Run analysis
         final_matches = self.analyze_data_quality(raw_df, ref_df, raw_col, ref_col)
         
         # Save results
         final_matches.to_csv('mapped_output_enhanced.csv', index=False)
-        pd.DataFrame([self.quality_report]).to_csv('quality_report.csv', index=False)
+        self.save_quality_report('quality_report.csv')
         
         # Generate dashboard
         self.generate_executive_dashboard(final_matches)
         
         # Final report
-        print(f"\n🎉 PIPELINE COMPLETE!")
-        print(f"✅ Enhanced output: mapped_output_enhanced.csv ({len(final_matches)} rows)")
-        print(f"📊 Dashboard: data_quality_dashboard.html")
-        print(f"📈 Match rate: {self.quality_report['results']['match_rate']}")
-        print(f"⏱️  Total time: {(datetime.now() - self.start_time).total_seconds():.1f}s")
+        print(f"\nComplete!")
+        print(f"Enhanced output: mapped_output_enhanced.csv ({len(final_matches)} rows)")
+        print(f"Dashboard: data_quality_dashboard.html")
+        print(f"Match rate: {self.quality_report['results']['match_rate']}")
+        print(f"Total time: {(datetime.now() - self.start_time).total_seconds():.1f}s")
+
+    def save_quality_report(self, filepath='quality_report.csv'):
+        """Save a clean, structured quality report CSV"""
+        flat = {
+            'raw_nulls':      self.quality_report['before_clean']['raw_nulls'],
+            'raw_duplicates': self.quality_report['before_clean']['raw_duplicates'],
+            'ref_nulls':      self.quality_report['before_clean']['ref_nulls'],
+            'exact_matches':  self.quality_report['results']['exact_matches'],
+            'fuzzy_matches':  self.quality_report['results']['fuzzy_matches'],
+            'total_matches':  self.quality_report['results']['total_matches'],
+            'match_rate':     self.quality_report['results']['match_rate'],
+        }
+        try:
+            pd.DataFrame([flat]).to_csv(filepath, index=False)
+            print(f"Quality report saved: {filepath}")
+        except PermissionError:
+            # File is open in Excel — save with timestamp instead
+            from datetime import datetime
+            alt = filepath.replace('.csv', f"_{datetime.now().strftime('%H%M%S')}.csv")
+            pd.DataFrame([flat]).to_csv(alt, index=False)
+            print(f"'{filepath}' was open in Excel. Saved as: {alt}")
+
 
 if __name__ == "__main__":
     guardian = DataQualityGuardian()

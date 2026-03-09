@@ -3,8 +3,8 @@ import re
 from datetime import datetime
 
 def generate_unmatched_report():
-    """DETAILED Unmatched Analysis + INTERACTIVE AUTO-FIX ⭐"""
-    print("🔍 UNMATCHED ANALYSIS REPORT")
+    """DETAILED Unmatched Analysis + INTERACTIVE AUTO-FIX"""
+    print("Unmatched Analysis Report")
     print("=" * 70)
     
     # Load data
@@ -15,13 +15,13 @@ def generate_unmatched_report():
     ref_keys = ref_df['lookup_key'].drop_duplicates()
     unmatched = raw_keys[~raw_keys.isin(ref_keys)]
     
-    print(f"📊 SUMMARY:")
+    print(f"Summary:")
     print(f"   Raw keys: {len(raw_keys)}")
     print(f"   Ref keys: {len(ref_keys)}")
-    print(f"   ❌ UNMATCHED: {len(unmatched)} ({len(unmatched)/len(raw_keys)*100:.1f}%)")
+    print(f"   Unmatched: {len(unmatched)} ({len(unmatched)/len(raw_keys)*100:.1f}%)")
     
-    # **NEW: PATTERN DETECTION**
-    print(f"\n🧬 PATTERN ANALYSIS:")
+    # Pattern detection
+    print(f"\nPattern Analysis:")
     patterns = {}
     for key in unmatched:
         # Extract prefix + numbers (MN130 → MN + 130)
@@ -31,20 +31,20 @@ def generate_unmatched_report():
             patterns[prefix] = patterns.get(prefix, 0) + 1
     
     for prefix, count in sorted(patterns.items(), key=lambda x: x[1], reverse=True):
-        print(f"   🔄 '{prefix}###': {count} keys")
+        print(f"  '{prefix}###': {count} keys")
     
-    # **NEW: INTERACTIVE AUTO-FIX OPTION**
+    # Auto fix options
     if len(unmatched) > 0:
-        print(f"\n🤖 AUTO-FIX SUGGESTIONS:")
+        print(f"\nAuto-Fix Options:")
         print(f"   Add top {min(10, len(patterns))} patterns to reference?")
         choice = input("   Generate auto-fixed reference? (y/n): ").lower().strip()
         
         if choice in ['y', 'yes']:
             auto_fix_reference(unmatched, patterns)
         else:
-            print("   👌 Skipped auto-fix")
+            print("   Skipped auto-fix")
     
-    print(f"\n💾 SAVING DETAILED REPORT...")
+    print(f"\nSaving Detailed Report...")
     
     # Detailed CSV
     report = pd.DataFrame({
@@ -65,14 +65,14 @@ def generate_unmatched_report():
     })
     coverage.to_csv('reference_coverage.csv', index=False)
     
-    print("✅ SAVED FILES:")
+    print("Saved Files:")
     print("   • unmatched_analysis.csv")
     print("   • reference_coverage.csv")
     print(f"   • {len(unmatched)} unmatched keys documented!")
 
 def auto_fix_reference(unmatched, patterns):
-    """🚀 Generate AUTO-FIXED reference file"""
-    print("✨ Creating AUTO-FIXED reference...")
+    """ Generate AUTO-FIXED reference file"""
+    print("Creating AUTO-FIXED reference...")
     
     # Create template rows for top patterns
     fix_rows = []
@@ -91,13 +91,14 @@ def auto_fix_reference(unmatched, patterns):
     
     # Save new reference
     fix_df.to_excel('reference_data_auto_fixed.xlsx', index=False)
-    print(f"✅ AUTO-FIXED reference created:")
+    print(f"AUTO-FIXED reference created:")
     print(f"   • reference_data_auto_fixed.xlsx ({len(fix_rows)} rows)")
     print(f"   • Top patterns: {', '.join([f'{p[0]} ({p[1]})' for p in top_prefixes])}")
     
     # Show preview
-    print("\n📋 PREVIEW (first 5 auto-fixed rows):")
+    print("\nPreview (first 5 auto-fixed rows):")
     print(fix_df[['lookup_key', 'description', 'status']].head())
 
 if __name__ == "__main__":
     generate_unmatched_report()
+
